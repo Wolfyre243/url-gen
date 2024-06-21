@@ -4,17 +4,41 @@ import { APIKey as apiKey } from './secret.js';
 const button = document.getElementById('button');
 const urlForm = document.getElementById('urlform');
 
+//Variables
+const url = 'https://api.rebrandly.com/v1/links'; //link to rebrandly
+
 //Functions
-function handleClick() {
-    console.log(apiKey);
+function displayLink(response) {
+    if (response.errors) {
+        console.log("There was an error");
+    } else {
+        console.log(response.shortUrl);
+    }
 }
 
-function shortenURL(inputURL) {
-
+async function shortenURL(inputURL) {
+    const data = JSON.stringify({destination: inputURL});
+    try {
+        const response = await fetch(url,
+            {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-type': 'application/json',
+                    'apikey': apiKey
+                }
+            }
+        );
+        if (response.ok) {
+            const jsonResponse = await response.json();
+            displayLink(jsonResponse);
+        }
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 //Event Listeners
-button.addEventListener('click', handleClick);
 urlForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
@@ -23,7 +47,6 @@ urlForm.addEventListener('submit', (event) => {
     if (submittedURL == "") {
         alert("Please enter a URL");
     } else {
-        alert("Successful submission");
-        console.log(submittedURL);
+        shortenURL(submittedURL);
     }
 });
