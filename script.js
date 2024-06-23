@@ -1,8 +1,9 @@
 import { APIKey as apiKey } from './secret.js';
 
 //Define DOM Elements
-const button = document.getElementById('button');
+const inputField = document.getElementById('url-input');
 const urlForm = document.getElementById('urlform');
+const result = document.getElementById('result');
 
 //Variables
 const url = 'https://api.rebrandly.com/v1/links'; //link to rebrandly
@@ -12,7 +13,8 @@ function displayLink(response) {
     if (response.errors) {
         console.log("There was an error");
     } else {
-        console.log(response.shortUrl);
+        result.innerHTML = response.shortUrl;
+        inputField.value = '';
     }
 }
 
@@ -42,7 +44,7 @@ async function shortenURL(inputURL) {
 urlForm.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    const submittedURL = document.getElementById('url-input').value;
+    const submittedURL = inputField.value;
 
     if (submittedURL == "") {
         alert("Please enter a URL");
